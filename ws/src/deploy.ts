@@ -35,7 +35,7 @@ async function main() {
   const { httpClientProofProvider } = await import("@midnight-ntwrk/midnight-js-http-client-proof-provider");
   const { indexerPublicDataProvider } = await import("@midnight-ntwrk/midnight-js-indexer-public-data-provider");
 
-  setNetworkId("undeployed");
+  setNetworkId("preprod");
 
   // Load compiled contract
   const CrashGame = await import("../contract/compiled/contract/index.js");
@@ -104,7 +104,7 @@ async function main() {
     midnightProvider: walletAndMidnightProvider,
   };
 
-  console.log("Deploying CrashGame contract to local network...");
+  console.log("Deploying CrashGame contract to preprod network...");
 
   const contract = await deployContract(providers as any, {
     compiledContract,
@@ -120,7 +120,7 @@ async function main() {
   const deployment = {
     contractAddress,
     deployedAt: new Date().toISOString(),
-    network: "undeployed",
+    network: "preprod",
   };
 
   fs.writeFileSync("deployment.json", JSON.stringify(deployment, null, 2));

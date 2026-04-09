@@ -29,67 +29,21 @@ const PlaygroundInteractions = () => {
   const { address: activeAddress, connectedApi, isConnected: walletConnected } = useMidnightWallet();
 
   const handlePlaceBet = async () => {
-    if (!activeAddress || !connectedApi) return;
+    if (!activeAddress) return;
 
     if (phase !== "waiting") {
       toast.error("Bets can only be placed before the game starts");
       return;
     }
 
-    try {
-      const receiverAddress = process.env.NEXT_PUBLIC_GAME_RECEIVER_ADDRESS || "";
-
-      // Check balances before attempting transfer
-      const unshieldedBal = await connectedApi.getUnshieldedBalances();
-      const dustBal = await connectedApi.getDustBalance();
-      console.log("[bet] unshielded balances:", unshieldedBal);
-      console.log("[bet] dust balance:", dustBal);
-      console.log("[bet] starting transfer:", { betAmount, receiverAddress, kind: "unshielded", type: nativeTokenType });
-
-      toast.loading("Waiting for wallet approval...");
-      const transferStart = Date.now();
-
-      const transferResult = await connectedApi.makeTransfer([{
-        kind: "unshielded",
-        type: nativeTokenType,
-        value: BigInt(Math.floor(betAmount * 1_000_000)),
-        recipient: receiverAddress,
-      }]);
-
-      console.log("[bet] makeTransfer resolved in", Date.now() - transferStart, "ms:", transferResult);
-      const { tx } = transferResult;
-
-      toast.dismiss();
-      toast.loading("Submitting transaction...");
-      const submitStart = Date.now();
-
-      await connectedApi.submitTransaction(tx);
-      console.log("[bet] submitTransaction resolved in", Date.now() - submitStart, "ms");
-
-      toast.dismiss();
-
-      if (activeAddress && betAmount > 0) {
-        joinGame(activeAddress, betAmount);
-
-        if (phase !== "waiting") {
-          toast.info("Your bet has been queued for the next round");
-        } else {
-          toast.success("Bet placed successfully!");
-        }
-      }
-    } catch (err: any) {
-      toast.dismiss();
-
-      if (err?.message?.includes("rejected") || err?.message?.includes("denied")) {
-        toast.error("Transaction cancelled by user");
-      } else if (err?.message?.includes("insufficient")) {
-        toast.error("Insufficient balance");
-      } else {
-        toast.error("Failed to place bet. Please try again.");
-      }
-
-      console.log(err);
+    if (betAmount <= 0) {
+      toast.error("Enter a bet amount");
+      return;
     }
+
+    // Demo: skip on-chain transfer, join directly
+    joinGame(activeAddress, betAmount);
+    toast.success(`Bet placed: ${betAmount}`);
   };
 
   const canPlaceBet =
