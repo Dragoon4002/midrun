@@ -15,7 +15,7 @@ function deriveRoleKey(accountKey: any, role: number, index = 0): Buffer {
 }
 
 const unshieldedKey = deriveRoleKey(account, Roles.NightExternal);
-const keystore = createKeystore(unshieldedKey, "undeployed");
+const keystore = createKeystore(unshieldedKey, "preprod");
 const publicKey = PublicKey.fromKeyStore(keystore);
-console.log("Your local network address:", publicKey.address);
+console.log("Your preprod address:", publicKey.address);
 hdResult.hdWallet.clear();

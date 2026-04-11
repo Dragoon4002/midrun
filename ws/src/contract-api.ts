@@ -18,7 +18,7 @@ async function getContract() {
   const { indexerPublicDataProvider } = await import("@midnight-ntwrk/midnight-js-indexer-public-data-provider");
   const { levelPrivateStateProvider } = await import("@midnight-ntwrk/midnight-js-level-private-state-provider");
 
-  setNetworkId("undeployed");
+  setNetworkId("preprod");
 
   // Resolve contract address
   let contractAddress = process.env.MIDNIGHT_CONTRACT_ADDRESS || "";

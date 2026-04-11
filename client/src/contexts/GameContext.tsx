@@ -147,7 +147,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         setTotalPlayers(0);
         setTotalStakeAmount(0);
         setCrashAt(undefined);
-        // Don't clear queue info here as it might still be processing
+        // Clear queue state — queue_processed will repopulate if any queued bets exist
+        setIsInQueue(false);
+        setQueueMessage(undefined);
+        setQueuedBets([]);
         break;
 
       case "bet_queued":

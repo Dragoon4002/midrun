@@ -5,11 +5,23 @@ import { cn } from "@/lib/utils";
 import { useMidnightWallet } from "../providers/wallet-wrapper";
 import { useGame } from "@/contexts/GameContext";
 import { User } from "lucide-react";
-import Image from "next/image";
 
 const UsersView = () => {
   const { address: activeAddress } = useMidnightWallet();
-  const { stakes, totalPlayers, totalStakeAmount } = useGame();
+  const { stakes, totalPlayers, totalStakeAmount, phase } = useGame();
+
+  const getStatus = (item: (typeof stakes)[number]) => {
+    if (item.hasWithdrawn) {
+      const payout = item.withdrawMultiplier
+        ? item.stake * item.withdrawMultiplier
+        : item.stake;
+      return { label: `Withdrawn: ${payout.toFixed(3)}`, color: "text-green-500" };
+    }
+    if (phase === "ended") {
+      return { label: `Game end, lost: ${item.stake}`, color: "text-red-500" };
+    }
+    return { label: `Bet placed: ${item.stake}`, color: "text-muted-foreground" };
+  };
 
   return (
     <div className="mt-6 w-full">
@@ -23,7 +35,6 @@ const UsersView = () => {
 
         {/* Total Coins Staked */}
         <div className="text-md font-semibold text-muted-foreground flex items-center">
-          <Image src={"/rand.svg"} width={40} height={10} alt="rand" />
           {totalStakeAmount.toFixed(3)}
         </div>
       </div>
@@ -41,9 +52,13 @@ const UsersView = () => {
               <p className="text-md">
                 {addressCompress(item.address.toString())}
               </p>
-              <div className="text-md font-semibold text-muted-foreground flex items-center">
-                <Image src={"/rand.svg"} width={40} height={10} alt="rand" />
-                {item.stake}
+              <div
+                className={cn(
+                  "text-md font-semibold flex items-center",
+                  getStatus(item).color
+                )}
+              >
+                {getStatus(item).label}
               </div>
             </div>
           </div>

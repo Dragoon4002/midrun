@@ -74,6 +74,7 @@ export class GameManager {
           address: addr,
           stake: stakeData.amount,
           hasWithdrawn: stakeData.hasWithdrawn || false,
+          withdrawMultiplier: stakeData.withdrawMultiplier,
         })
       );
 
@@ -157,6 +158,7 @@ export class GameManager {
         address: addr,
         stake: stakeData.amount,
         hasWithdrawn: stakeData.hasWithdrawn || false,
+        withdrawMultiplier: stakeData.withdrawMultiplier,
       })
     );
 
@@ -212,6 +214,7 @@ export class GameManager {
         address: addr,
         stake: stakeData.amount,
         hasWithdrawn: stakeData.hasWithdrawn || false,
+        withdrawMultiplier: stakeData.withdrawMultiplier,
       })
     );
 
@@ -231,15 +234,16 @@ export class GameManager {
     this.gameState.players.clear();
     this.currentDisplayMultiplier = 1.0; // Reset display multiplier
 
-    // Process any pending queued bets first
-    this.processPendingQueue();
-
+    // Broadcast waiting_phase FIRST (client resets stakes here)
     this.broadcast({
       type: "waiting_phase",
       message: "Waiting for next game",
       waitTime: 15000,
       queueSize: this.gameState.pendingQueue.size,
     });
+
+    // Then process queued bets (broadcasts queue_processed which populates stakes)
+    this.processPendingQueue();
 
     this.waitTimer = setTimeout(() => {
       this.startGame();
@@ -264,6 +268,7 @@ export class GameManager {
         address,
         stake: stakeData.amount,
         hasWithdrawn: stakeData.hasWithdrawn || false,
+        withdrawMultiplier: stakeData.withdrawMultiplier,
       })
     );
 
@@ -385,6 +390,7 @@ export class GameManager {
         address,
         stake: stakeData.amount,
         hasWithdrawn: stakeData.hasWithdrawn || false,
+        withdrawMultiplier: stakeData.withdrawMultiplier,
       })
     );
 

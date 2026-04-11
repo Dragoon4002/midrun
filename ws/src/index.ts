@@ -4,6 +4,8 @@ import { GameManager } from './game-manager'
 const app = new Hono()
 const gameManager = new GameManager()
 
+// Demo mode: skip wallet/contract init
+
 app.get('/', (c) => {
   return c.text('Game WebSocket Server Running!')
 })
