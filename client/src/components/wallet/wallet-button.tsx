@@ -8,7 +8,7 @@ import { Wallet2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function WalletButton({ className }: { className?: string }) {
-  const { isConnected, address } = useMidnightWallet();
+  const { isConnected, unshieldedAddress: address } = useMidnightWallet();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 

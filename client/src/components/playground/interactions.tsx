@@ -17,6 +17,7 @@ const PlaygroundInteractions = () => {
   const [betAmount, setBetAmount] = useState<number>(0);
   const [autoCashout, setAutoCashout] = useState<number>(0);
   const [isCashingOut, setIsCashingOut] = useState<boolean>(false);
+  const [isWaitingForSignature, setIsWaitingForSignature] = useState<boolean>(false);
   const {
     phase,
     joinGame,
@@ -26,7 +27,7 @@ const PlaygroundInteractions = () => {
     isInQueue,
     queueMessage
   } = useGame();
-  const { address: activeAddress, connectedApi, isConnected: walletConnected } = useMidnightWallet();
+  const { unshieldedAddress: activeAddress, laceApi, isConnected: walletConnected } = useMidnightWallet();
 
   const handlePlaceBet = async () => {
     if (!activeAddress) return;
@@ -41,13 +42,17 @@ const PlaygroundInteractions = () => {
       return;
     }
 
-    // Demo: skip on-chain transfer, join directly
+    setIsWaitingForSignature(true);
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+    setIsWaitingForSignature(false);
+
+    // Server routes to current game or queues for next based on phase
     joinGame(activeAddress, betAmount);
     toast.success(`Bet placed: ${betAmount}`);
   };
 
   const canPlaceBet =
-    activeAddress && betAmount > 0 && phase === "waiting" && isConnected && walletConnected && !isInQueue;
+    activeAddress && betAmount > 0 && phase === "waiting" && isConnected && walletConnected && !isInQueue && !isWaitingForSignature;
 
   const handleCashout = () => {
     if (activeAddress && phase === "running" && !isCashingOut) {
@@ -109,6 +114,7 @@ const PlaygroundInteractions = () => {
             phase === "running" && canCashout ? handleCashout : handlePlaceBet
           }
           disabled={
+            isWaitingForSignature ||
             isInQueue ||
             (phase === "waiting"
               ? !canPlaceBet
@@ -117,7 +123,9 @@ const PlaygroundInteractions = () => {
               : true)
           }
         >
-          {isInQueue
+          {isWaitingForSignature
+            ? "Waiting for wallet signature..."
+            : isInQueue
             ? "Queued for Next Round"
             : phase === "waiting"
             ? "Place Bet"

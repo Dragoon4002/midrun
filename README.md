@@ -81,13 +81,24 @@ bun run compile           # compact compile CrashGame.compact → contract/compi
 bun run deploy            # deploys to preprod, writes deployment.json
 ```
 
-Current `deployment.json`:
+Current `deployment.json` (deployed via local Midnight preview container):
 ```json
 {
   "contractAddress": "23dc9049844987be56c5f307d3c92a2bb1850c504019ae8facd4abeff4aa7a81",
   "network": "preprod"
 }
 ```
+
+### Contract Deployment Details
+
+| | Value |
+|---|---|
+| Contract Address | `23dc9049844987be56c5f307d3c92a2bb1850c504019ae8facd4abeff4aa7a81` |
+| Network | `preprod` |
+| Deployment Target | Midnight local preview container |
+| Game Receiver Address | `mn_addr_preprod1ywet4ygftjper90zpc4ncg3eff8s2x60s9vndmjgddrv5vawheaq6qql0a` |
+| Wallet Connector | Lace (`window.midnight.mnLace`) via `@midnight-ntwrk/dapp-connector-api` |
+| Token | tNIGHT (unshielded, native token type `0x0000...0000`) |
 
 ### Environment
 
@@ -163,7 +174,7 @@ Covers `game-manager` phase transitions and `game-functions` payout math.
 - [x] Player queue for bets placed during an active round (auto-enter next round)
 - [x] Hono WebSocket server with all event broadcasts (`join_game`, `withdraw`, `multiplier_update`, `game_ended`, etc.)
 - [x] Next.js client with Lace DApp connector, wallet state (shielded / unshielded / DUST balances), Bech32m address display
-- [x] Bet placement from client via `connectedApi.makeTransfer()` (unshielded NIGHT → receiver address)
+- [x] Bet placement from client via `laceApi.makeTransfer()` (unshielded NIGHT → receiver address)
 - [x] CrashGame Compact contract compiled + deployed to preprod
 - [x] Dockerized proof server + ws
 - [x] Bun test suite for game-manager and game-functions

@@ -13,7 +13,7 @@ interface WalletModalProps {
 }
 
 export function WalletModal({ open, onOpenChange }: WalletModalProps) {
-  const { isConnected, address, connect, disconnect } = useMidnightWallet();
+  const { isConnected, unshieldedAddress: address, connect, disconnect } = useMidnightWallet();
   const [showAccount, setShowAccount] = useState(false);
 
   const handleClose = () => {

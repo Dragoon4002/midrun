@@ -7,7 +7,7 @@ import { useGame } from "@/contexts/GameContext";
 import { User } from "lucide-react";
 
 const UsersView = () => {
-  const { address: activeAddress } = useMidnightWallet();
+  const { unshieldedAddress: activeAddress } = useMidnightWallet();
   const { stakes, totalPlayers, totalStakeAmount, phase } = useGame();
 
   const getStatus = (item: (typeof stakes)[number]) => {
